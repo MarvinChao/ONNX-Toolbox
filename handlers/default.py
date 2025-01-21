@@ -4,13 +4,21 @@ import numpy as np
 
 
 @register_node_handler("default")
-def default_handler(model, node):
-    """
-    Default handler for unsupported op_types.
-    Returns a minimal attribute dictionary with op_type and node name.
-    """
-    print(f"{node.name} has unsupported op_type [{node.op_type}]...")
+class DefaultHandler:
+    def handle(self, model, node):
+        """
+        Default handler for unsupported op_types.
+        Returns a minimal attribute dictionary with op_type and node name.
 
-    attributes = NodeAttributes(model, node, support=False)
+        Args:
+            model (class):  Input ONNX model
+            node (class):   ONNX node
 
-    return attributes
+        Returns:
+            attributes (class): Node attributes
+        """
+        print(f"{node.name} has unsupported op_type [{node.op_type}]...")
+
+        attributes = NodeAttributes(model, node, support=False)
+
+        return attributes

@@ -3,13 +3,13 @@ from node_attributes import NodeAttributes
 import numpy as np
 
 
-@register_node_handler("Relu")
-class ReluNodeHandler:
+@register_node_handler("Tanh")
+class TanhNodeHandler:
     def handle(self, model, node):
         """
-        Handler for op_types "Relu".
+        Handler for op_types "Tanh"
 
-        * The op has ALU count of its input_dimension * 0.5 (only for positive input value)
+        * The op has TRI     count of its input_dimension (tanh)
 
         Args:
             model (class):  Input ONNX model
@@ -21,6 +21,6 @@ class ReluNodeHandler:
         attributes = NodeAttributes(model, node)
 
         # Calculating compute primitive
-        attributes.count_alu = np.prod(attributes.input_dimension) * 0.5
+        attributes.count_tri = np.prod(attributes.input_dimension)
 
         return attributes

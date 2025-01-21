@@ -60,7 +60,7 @@ class ModelStats:
             #            ops_handler = self.ONNX_OPS_REGISTRY.get(
             #                node.op_type, self.ONNX_OPS_REGISTRY["default"]
             #            )
-            self.ops_attributes.append(ops_handler(self.model, node).to_dict())
+            self.ops_attributes.append(ops_handler.handle(self.model, node).to_dict())
 
     def save_model(self):
         onnx.save(

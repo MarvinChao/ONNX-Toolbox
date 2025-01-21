@@ -4,11 +4,23 @@ import numpy as np
 
 
 @register_node_handler("LeakyRelu")
-def handler_LeakyRelu_node(model, node):
-    attributes = NodeAttributes(model, node)
+class LeakyReluNodeHandler:
+    def handle(self, model, node):
+        """
+        Handler for op_types "Gemm".
 
-    # Calculating compute primitive
-    # Theoretically this could take 2~3 (cmp, mul, and assign) instructions
-    attributes.count_alu = np.prod(attributes.input_dimension) * 2.5
+        * The op has ALU count of its input_dimension * 2.5 (cmp/mul/assign instructions depend on its sign )
 
-    return attributes
+        Args:
+            model (class):  Input ONNX model
+            node (class):   ONNX node
+
+        Returns:
+            attributes (class): Node attributes
+        """
+        attributes = NodeAttributes(model, node)
+
+        # Calculating compute primitive
+        attributes.count_alu = np.prod(attributes.input_dimension) * 2.5
+
+        return attributes
