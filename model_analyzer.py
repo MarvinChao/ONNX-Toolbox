@@ -11,6 +11,14 @@ def main():
         "--input", "-i", type=str, required=True, help="Input ONNX model filename"
     )
     parser.add_argument(
+        "--memory",
+        "-m",
+        type=int,
+        default=0,
+        required=False,
+        help="Local memory size (in KBytes)",
+    )
+    parser.add_argument(
         "--report",
         "-r",
         action="store_true",
@@ -29,7 +37,7 @@ def main():
 
     print_args(args)
 
-    model_stats = ModelStats(args.input)
+    model_stats = ModelStats(args)
     if args.report == True:
         model_stats.generate_report()
     if args.save == True:
@@ -37,12 +45,11 @@ def main():
 
 
 def print_args(args):
-    if args.input:
-        print(f"Input ONNX model is {args.input}")
-    if args.report:
-        print(f"Generate report: {args.report}")
-    if args.save:
-        print(f"Save model: {args.save}")
+    print("Input arguments:")
+    print(f"========================================")
+    for key, value in vars(args).items():
+        print(f"{key}:      {value}")
+    print(f"========================================")
 
 
 if __name__ == "__main__":
