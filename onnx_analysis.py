@@ -9,8 +9,26 @@ from node_registry import ONNX_OPS_REGISTRY, register_node_handler, get_handler
 from node_attributes import NodeAttributes
 import handlers
 from gen_report import ReportGenerator
+from MemTracker import MemTracker
 
 import pdb
+
+
+def is_chainable(op_type):
+    """
+    Example logic for which ops can be chained together without explicit DRAM flush
+    """
+    chainable_ops = {
+        "Relu",
+        "Sigmoid",
+        "Tanh",
+        "Add",
+        "Mul",
+        "Mish",
+        "Transpose",
+        "LeakyRelu",
+    }
+    return op_type in chainable_ops
 
 
 class ModelStats:
@@ -23,6 +41,7 @@ class ModelStats:
     ops_attributes (list):      The list of attributes of all ops in the ONNX model
     ref_count (dict):           The tensor reference count used to track local memory usage
     tensor_size (dict):         The size of all tensors in the ONNX model
+    local_memory_size(int):     The size of local SRAM
     """
 
     def __init__(self, args):
@@ -41,7 +60,9 @@ class ModelStats:
         self.ref_count = self.build_ref_count_map()
         self.tensor_size = self.build_tensor_size_map()
 
-        self.track_local_foorprint()
+        self.local_memory_size = args.memory
+        #        self.track_local_foorprint()
+        self.add_memory_tracker()
 
     def load_model(self):
         print(f"Loading ONNX model: {self.onnx_filename}")
@@ -126,50 +147,48 @@ class ModelStats:
 
         return size_map
 
-    def track_local_foorprint(self):
-        current_footprint = 0
-        max_footprint = 0
-        allocated_tensors = set()
+    def partition_model(self):
+        """
+        Returns a list of segments, where each segment is a list of nodes
+        that can be chained together before forcing a store to DRAM.
+        """
+        segments = []
+        current_segment = []
 
+        for node in self.model.graph.node:
+            # Start a new segment when the node is unchainable
+            if not is_chainable(node.op_type):
+                segments.append(current_segment)
+                current_segment = []
+                current_segment.append(node)
+            else:
+                current_segment.append(node)
+
+            # Adding leftover segment to the segment list
+            if current_segment:
+                segments.append(current_segment)
+
+            return segments
+
+    def add_memory_tracker(self):
+        mem_tracker = MemTracker(
+            self.model, self.tensor_size, self.ref_count, self.local_memory_size
+        )
+
+        num_nodes = len(self.model.graph.node)
         for i, node in enumerate(self.model.graph.node):
-            # 1. Allocate input memory
-            for input_name in node.input:
-                if not input_name:
-                    continue
+            if i == num_nodes - 1:
+                next_node_chainable = False
+            else:
+                next_node = self.model.graph.node[i + 1]
+                next_node_chainable = is_chainable(next_node.op_type)
 
-            if input_name not in allocated_tensors:
-                if input_name in self.tensor_size:
-                    current_footprint += self.tensor_size[input_name]
-                    allocated_tensors.add(input_name)
+            node_stats = mem_tracker.process_node(node, next_node_chainable)
+            self.ops_attributes[i]["bytes_loaded"] = node_stats["bytes_loaded"]
+            self.ops_attributes[i]["bytes_stored"] = node_stats["bytes_stored"]
+            self.ops_attributes[i]["footprint"] = node_stats["footprint"]
 
-            # 2. Allocate output memory
-            for output_name in node.output:
-                if not output_name:
-                    continue
-
-                if output_name in self.tensor_size:
-                    current_footprint += self.tensor_size[output_name]
-                    allocated_tensors.add(output_name)
-
-                    # Update peak usage
-                    if current_footprint > max_footprint:
-                        max_footprint = current_footprint
-
-            self.ops_attributes[i]["SRAM Footprint"] = current_footprint
-
-            # 3. After the node finishes, free input/weight if ref_count hits 0
-            for input_name in node.input:
-                if not input_name:
-                    continue
-
-                if input_name in self.ref_count:
-                    self.ref_count[input_name] -= 1
-                    if self.ref_count[input_name] == 0:
-                        if input_name in allocated_tensors:
-                            current_footprint -= self.tensor_size[input_name]
-                            allocated_tensors.remove(input_name)
-
-            return max_footprint
+        mem_tracker.finalize()
 
     def save_model(self):
         onnx.save(

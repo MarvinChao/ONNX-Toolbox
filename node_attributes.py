@@ -88,6 +88,8 @@ class NodeAttributes:
             self.kernel_shape = None
             self.pads = None
             self.strides = None
+            # Resize-specific attributes
+            self.resize_mode = None
         else:
             self.node_op_type = node.op_type
             self.node_data_type = 0
@@ -111,6 +113,8 @@ class NodeAttributes:
             self.kernel_shape = None
             self.pads = None
             self.strides = None
+            # Resize-specific attributes
+            self.resize_mode = None
 
     def is_tensor_name_initializer(self, model, tensor_name):
         initializers = model.graph.initializer
@@ -281,6 +285,7 @@ class NodeAttributes:
             "Kernel Shape": self.kernel_shape,
             "Pads": self.pads,
             "Strides": self.strides,
+            "Resize Mode": self.resize_mode,
             "MAC Count": self.count_mac,
             "ALU Count": self.count_alu,
             "EXP Count": self.count_exp,
