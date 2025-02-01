@@ -2,3 +2,6 @@ argparse
 onnx
 pandas
 openpyxl
+onnxruntime
+onnxsim
+numpy
