@@ -1,12 +1,14 @@
 import os
+import copy
 import argparse
 import onnx
 import onnxoptimizer
 import onnxruntime as ort
 
-# import onnx_graphsurgeon as gs
 from onnxsim import simplify
 import numpy as np
+
+from toolbox_optimizer import ToolboxOptimizer
 
 
 class GraphOptimizer:
@@ -15,6 +17,7 @@ class GraphOptimizer:
         self.method = method
         self.level = level
         self.export = export
+        self.model = None
         self.load_model()
 
     def load_model(self):
@@ -137,6 +140,15 @@ class GraphOptimizer:
         finally:
             os.remove(temp_model_path)
 
+    def toolbox_optimizer(self):
+        """
+        Apply custom implementation of model optimization not found in public tools
+        """
+        optimizer = ToolboxOptimizer(self.model)
+        optimizer.apply()
+        self.model = copy.deepcopy(optimizer.model)
+        print(f"ONNX-Toolbox optimizations applied")
+
     def execute(self):
         """
         Execute model optimization steps
@@ -148,19 +160,17 @@ class GraphOptimizer:
         match self.method:
             case "onnxsim":
                 self.simplify_model()
-                return
             case "onnx":
                 self.onnx_optimizer()
-                return
             case "ort":
                 self.ort_optimizer()
-                return
             case "onnx-toolbox":
-                return
+                self.toolbox_optimizer()
             case "all":
                 self.simplify_model()
                 self.onnx_optimizer()
                 self.ort_optimizer()
+                self.toolbox_optimizer()
             case _:
                 return
 
