@@ -21,7 +21,7 @@ def main():
     parser.add_argument(
         "--report",
         "-r",
-        action="store_true",
+        action="store_false",
         required=False,
         help="Generate ONNX analysis report",
     )
@@ -31,6 +31,13 @@ def main():
         action="store_true",
         required=False,
         help="Saved processed onnx model",
+    )
+    parser.add_argument(
+        "--verbose",
+        "-v",
+        action="store_true",
+        required=False,
+        help="Verbose output for debugging purposes",
     )
 
     args = parser.parse_args()
@@ -48,7 +55,7 @@ def print_args(args):
     print("Input arguments:")
     print(f"========================================")
     for key, value in vars(args).items():
-        print(f"{key}:      {value}")
+        print(f"{key:<10}:      {value}")
     print(f"========================================")
 
 

@@ -45,8 +45,10 @@ class ConvNodeHandler:
             attributes.weight_size = attributes.get_weight_size(model, node.input[1])
 
         # Calculating compute primitive
-        attributes.count_mac = np.prod(attributes.output_dimension) * np.prod(
-            attributes.kernel_shape
+        attributes.count_mac = (
+            np.prod(attributes.output_dimension)
+            * np.prod(attributes.kernel_shape)
+            * (attributes.input_dimension[0][-3] / attributes.group)
         )
         attributes.count_alu = np.prod(attributes.output_dimension)
 
