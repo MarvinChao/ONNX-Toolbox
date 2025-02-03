@@ -132,6 +132,8 @@ class ReportGenerator:
                     "Input Size (bytes)": "sum",
                     "Weight Size (bytes)": "sum",
                     "Output Size (bytes)": "sum",
+                    "bytes_loaded": "sum",
+                    "bytes_stored": "sum",
                 }
             )
             .reset_index()
