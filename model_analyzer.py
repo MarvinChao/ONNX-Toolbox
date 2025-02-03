@@ -16,12 +16,12 @@ def main():
         type=int,
         default=0,
         required=False,
-        help="Local memory size (in KBytes)",
+        help="Local memory size (in MBytes)",
     )
     parser.add_argument(
         "--report",
         "-r",
-        action="store_false",
+        action="store_true",
         required=False,
         help="Generate ONNX analysis report",
     )
