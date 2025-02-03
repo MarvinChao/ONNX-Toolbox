@@ -60,6 +60,7 @@ class MemTracker:
         # Track local loads/stores for just this node
         bytes_loaded_node = 0
         bytes_stored_node = 0
+        current_max_footprint = 0
 
         # 1. Load inputs if not already in local SRAM
         for input in node.input:
@@ -80,6 +81,9 @@ class MemTracker:
                 self.current_footprint += out_size
                 if self.current_footprint > self.max_footprint:
                     self.max_footprint = self.current_footprint
+
+        # This is the maximal footprint for each node.
+        current_max_footprint = self.current_footprint
 
         # 3. If the next node is "un-chainable", flush its outputs to DRAM.
         if not next_node_chainable:
@@ -115,8 +119,9 @@ class MemTracker:
         return {
             "bytes_loaded": bytes_loaded_node,
             "bytes_stored": bytes_stored_node,
-            "footprint": self.current_footprint,
+            "footprint": current_max_footprint,
             "max_footprint": self.max_footprint,
+            "next_node_chainable": next_node_chainable,
         }
 
     def finalize(self):

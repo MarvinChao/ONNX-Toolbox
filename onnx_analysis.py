@@ -27,6 +27,7 @@ def is_chainable(op_type):
         "Mish",
         "Transpose",
         "LeakyRelu",
+        "Concat",
     }
     return op_type in chainable_ops
 
@@ -41,10 +42,12 @@ class ModelStats:
     ops_attributes (list):      The list of attributes of all ops in the ONNX model
     ref_count (dict):           The tensor reference count used to track local memory usage
     tensor_size (dict):         The size of all tensors in the ONNX model
-    local_memory_size(int):     The size of local SRAM
+    local_memory_size (int):    The size of local SRAM
+    verbose (bool):             Verbose output flag
     """
 
     def __init__(self, args):
+        self.verbose = args.verbose
         self.onnx_filename = args.input
         self.model = self.load_model()
         self.xlsx_filename = (
@@ -61,7 +64,6 @@ class ModelStats:
         self.tensor_size = self.build_tensor_size_map()
 
         self.local_memory_size = args.memory
-        #        self.track_local_foorprint()
         self.add_memory_tracker()
 
     def load_model(self):
@@ -180,17 +182,28 @@ class ModelStats:
             if i == num_nodes - 1:
                 next_node_chainable = False
             else:
+                # The next node needs to be a chainable op and it has to be connected to current node
                 next_node = self.model.graph.node[i + 1]
-                next_node_chainable = is_chainable(next_node.op_type)
+                next_node_chainable = (
+                    is_chainable(next_node.op_type)
+                    and set(node.output).intersection(set(next_node.input)) != {}
+                )
 
             node_stats = mem_tracker.process_node(node, next_node_chainable)
             self.ops_attributes[i]["bytes_loaded"] = node_stats["bytes_loaded"]
             self.ops_attributes[i]["bytes_stored"] = node_stats["bytes_stored"]
-            self.ops_attributes[i]["footprint"] = node_stats["footprint"]
+            if self.verbose:
+                self.ops_attributes[i]["Local SRAM footprint"] = node_stats["footprint"]
+                self.ops_attributes[i]["Next Node Chainable"] = node_stats[
+                    "next_node_chainable"
+                ]
 
         mem_tracker.finalize()
 
     def save_model(self):
+        print(
+            f"Export model to {os.path.splitext(os.path.basename((self.onnx_filename))[0] + '_opt.onnx')}"
+        )
         onnx.save(
             self.model,
             os.path.splitext(os.path.basename(self.onnx_filename))[0] + "_opt.onnx",
@@ -198,4 +211,5 @@ class ModelStats:
 
     def generate_report(self):
         report_generator = ReportGenerator(self.ops_attributes, self.xlsx_filename)
+        print(f"Generate model analysis report to {self.xlsx_filename}")
         report_generator.write_xlsx()

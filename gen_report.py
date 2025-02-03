@@ -55,6 +55,8 @@ class ReportGenerator:
                 "Input Size (bytes)",
                 "Weight Size (bytes)",
                 "Output Size (bytes)",
+                "bytes_loaded",
+                "bytes_stored",
             }
 
             totals = {key: 0 for key in stat_names if key in TOTAL_STAT_KEYS}
