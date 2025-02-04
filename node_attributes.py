@@ -56,7 +56,8 @@ class NodeAttributes:
     count_alu (int):            Compute primitive count - ALU
     count_exp (int):            Compute primitive count - Exponent and Logarithm
     count_div (int):            Compute primitive count - Division
-    count_tri (int):            Compute primitive count - Trigonometric functions
+    count_trig (int):           Compute primitive count - Trigonometric functions
+    count_sqrt (int):           Compute primitive count - Square root functions
     dilation (int):             Convolution attributes - dilation
     group (int):                Convolution attributes - group
     kernel_shape (int):         Convolution attributes - kernel_shape
@@ -81,7 +82,8 @@ class NodeAttributes:
             self.count_alu = 0
             self.count_exp = 0
             self.count_div = 0
-            self.count_tri = 0
+            self.count_trig = 0
+            self.count_sqrt = 0
             # Conv-specific attributes
             self.dilations = None
             self.group = None
@@ -106,7 +108,8 @@ class NodeAttributes:
             self.count_alu = 0
             self.count_exp = 0
             self.count_div = 0
-            self.count_tri = 0
+            self.count_trig = 0
+            self.count_sqrt = 0
             # Conv-specific attributes
             self.dilations = None
             self.group = None
@@ -290,7 +293,8 @@ class NodeAttributes:
             "ALU Count": self.count_alu,
             "EXP Count": self.count_exp,
             "DIV Count": self.count_div,
-            "TRI Count": self.count_tri,
+            "TRIG Count": self.count_trig,
+            "SQRT Count": self.count_sqrt,
             "Input Size (bytes)": self.input_size,
             "Weight Size (bytes)": self.weight_size,
             "Output Size (bytes)": self.output_size,
