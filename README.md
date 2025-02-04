@@ -9,8 +9,7 @@ This is the first tool that is currently being developed. The tool will provide 
 
 ```
 > python model_analyzer.py --help
-usage: model_analyzer.py [-h] --input INPUT [--memory MEMORY] [--report]
-                         [--save]
+usage: model_analyzer.py [-h] --input INPUT [--memory MEMORY] [--report] [--save] [--verbose]
 
 Toolbox for analyzing the ONNX model
 
@@ -22,7 +21,7 @@ optional arguments:
                         Local memory size (in KBytes)
   --report, -r          Generate ONNX analysis report
   --save, -s            Saved processed onnx model
-
+  --verbose, -v         Verbose output for debugging purposes
 ```
 
 The compute cost in the current implementation is structured differently than most of other profiler, which either only track MAC (Multiply-ACumulate) or MAC + ALU OP. While this is a good method to characterize the model compute effort, I found that often on different kind of processors (CPU, GPU, DSP, NPU) they often come with special unit to accelerate a variety of compute primitives (i.e. exp or tanh) hance it will behave very differently on different processors. One example is the Special Function Unit (SFU) in Nvidia's Streaming Multiproceesor (SM). So I want to work on characterize the ONNX models in these important compute primitives instead of simplifying them into MAC and ALU operations. For now I am tracking the operations in the following compute primitives:
@@ -35,7 +34,8 @@ The compute cost in the current implementation is structured differently than mo
 | ALU               | Arithmetic Logic Unit Operations  |
 | EXP/LOG           | Log() and Exp() Operations        |
 | DIV               | Division Operations               |
-| TRI               | Trigonometry Operations           |
+| TRIG              | Trigonometry Operations           |
+| SQRT              | Square root Operations            |
 
 </div>
 

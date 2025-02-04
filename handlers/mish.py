@@ -12,7 +12,7 @@ class MishNodeHandler:
         * The op has ALU     count of its input_dimension * 2 (add and mul)
         * The op has EXP/LOG count of its input_dimension * 2 (exp and log)
         * The op has DIV     count of its input_dimension
-        * The op has TRI     count of its input_dimension (tanh)
+        * The op has TRIG    count of its input_dimension (tanh)
 
         Args:
             model (class):  Input ONNX model
@@ -27,6 +27,6 @@ class MishNodeHandler:
         attributes.count_alu = np.prod(attributes.input_dimension)
         attributes.count_exp = np.prod(attributes.input_dimension) * 2
         attributes.count_div = np.prod(attributes.input_dimension)
-        attributes.count_tri = np.prod(attributes.input_dimension)
+        attributes.count_trig = np.prod(attributes.input_dimension)
 
         return attributes
