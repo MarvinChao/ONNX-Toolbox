@@ -3,13 +3,13 @@ from node_attributes import NodeAttributes
 import numpy as np
 
 
-@register_node_handler("Tanh")
+@register_node_handler("Sqrt")
 class TanhNodeHandler:
     def handle(self, model, node):
         """
-        Handler for op_types "Tanh"
+        Handler for op_types "Sqrt"
 
-        * The op has TRIG    count of its input_dimension (tanh)
+        * The op has SQRT    count of its input_dimension (sqrt)
 
         Args:
             model (class):  Input ONNX model
@@ -21,6 +21,6 @@ class TanhNodeHandler:
         attributes = NodeAttributes(model, node)
 
         # Calculating compute primitive
-        attributes.count_trig = np.prod(attributes.input_dimension)
+        attributes.count_sqrt = np.prod(attributes.input_dimension)
 
         return attributes
