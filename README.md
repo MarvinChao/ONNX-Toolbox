@@ -39,6 +39,8 @@ The compute cost in the current implementation is structured differently than mo
 
 </div>
 
+You can find further details in [model_analysis.md](docs/model_analysis.md)
+
 For model data-transfer, in many of the modern hardware you will find local cache/memory to reduce the system memory bandwidth, using per-layer input/weight/output as indication of ONNX model data traffic requirement is off the reality. So I add an option to specify certain amount of local/dedicate memory for inference. What this mechanism do is to identify which ops are "**chainable**", which means it can be executed in local memory in tiles without the need to transfer all the output data out to system memory. It is a common and bare minimal optimization for inference that most HW will practice so I added to the tool. Note that I didn't meant to implement the most aggressive memory management scheme in this tool given many of them are HW/SW implementation specific.
 
 <br>
