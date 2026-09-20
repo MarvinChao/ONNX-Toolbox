@@ -1,6 +1,7 @@
 import os
 import onnx
-from onnx import TensorProto, mapping
+from onnx import TensorProto
+from onnx.helper import tensor_dtype_to_np_dtype
 import numpy as np
 import argparse
 from onnxruntime.tools.symbolic_shape_infer import SymbolicShapeInference
