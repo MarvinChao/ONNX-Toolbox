@@ -20,13 +20,20 @@ class BatchNormNodeHandler:
         """
         attributes = NodeAttributes(model, node)
 
+        # input_dimension is a list of per-input shapes; the first entry is the
+        # data tensor (X). The scale/bias/mean/var inputs are initializers and
+        # are excluded from input_dimension.
+        data_shape = attributes.input_dimension[0] if attributes.input_dimension else []
+        num_elements = np.prod(data_shape) if data_shape else 0
+        # Channel count is the second dimension (N x C x ...); default to 1 when
+        # the shape is missing or has no channel axis.
+        num_channels = data_shape[1] if len(data_shape) > 1 else 1
+
         # Calculating compute primitive
-        attributes.count_mac = np.prod(attributes.input_dimension)
-        attributes.count_alu = np.prod(attributes.input_dimension) * 6
-        attributes.count_div = attributes.input_dimension[1] * 2 + np.prod(
-            attributes.input_dimension
-        )
-        attributes.count_sqrt = attributes.input_dimension[1]
+        attributes.count_mac = num_elements
+        attributes.count_alu = num_elements * 6
+        attributes.count_div = num_channels * 2 + num_elements
+        attributes.count_sqrt = num_channels
 
         # Add inputs could possibly contains coefficients
         for tensor_name in node.input:

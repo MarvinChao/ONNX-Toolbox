@@ -44,11 +44,26 @@ class ConvNodeHandler:
         else:
             attributes.weight_size = attributes.get_weight_size(model, node.input[1])
 
-        # Calculating compute primitive
+        # Calculating compute primitive. The number of input channels is the
+        # -3 axis of the data tensor (N x C x H x W). When shape inference could
+        # not resolve the data shape, fall back to deriving input channels from
+        # the weight tensor W (shape: [out_ch, in_ch/group, kH, kW]).
+        data_shape = attributes.input_dimension[0] if attributes.input_dimension else []
+        group = attributes.group if attributes.group else 1
+        if len(data_shape) >= 3:
+            input_channels = data_shape[-3]
+        else:
+            weight_shape = attributes.get_weight_shape(model, node.input[1])
+            if weight_shape is not None and len(weight_shape) >= 2:
+                # W's in-channel axis is already divided by group
+                input_channels = weight_shape[1] * group
+            else:
+                input_channels = group
+
         attributes.count_mac = (
             np.prod(attributes.output_dimension)
             * np.prod(attributes.kernel_shape)
-            * (attributes.input_dimension[0][-3] / attributes.group)
+            * (input_channels / group)
         )
         attributes.count_alu = np.prod(attributes.output_dimension)
 
