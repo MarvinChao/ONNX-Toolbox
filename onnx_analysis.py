@@ -184,14 +184,14 @@ class ModelStats:
                 next_node_chainable = False
             else:
                 # The chainability is determined by:
-                # 1. op_type
-                # 2. local memory size (if local memory is big enough no system memory transfer will be needed)
-                # 3. whether next node is connected topologically
+                # 1. op_type of the next node
+                # 2. whether the next node is connected topologically
+                # The local-memory-size test (footprint fits in SRAM) is folded
+                # in inside process_node once this node's footprint is known.
                 next_node = self.model.graph.node[i + 1]
-                next_node_chainable = (
-                    is_chainable(next_node.op_type)
-                    and set(node.output).intersection(set(next_node.input)) != {}
-                ) or (self.local_memory_size * 1024 * 1024 >= node_stats["footprint"])
+                next_node_chainable = is_chainable(next_node.op_type) and bool(
+                    set(node.output).intersection(set(next_node.input))
+                )
 
             node_stats = mem_tracker.process_node(node, next_node_chainable)
             self.ops_attributes[i]["bytes_loaded"] = node_stats["bytes_loaded"]
