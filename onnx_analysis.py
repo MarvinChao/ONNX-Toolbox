@@ -115,7 +115,7 @@ class ModelStats:
         return shape
 
     def get_tensor_size(self, elem_type, shape):
-        np_dtype = mapping.TENSOR_TYPE_TO_NP_TYPE[elem_type]
+        np_dtype = tensor_dtype_to_np_dtype(elem_type)
         item_size = np.dtype(np_dtype).itemsize
         num_elements = 1
         for s in shape:

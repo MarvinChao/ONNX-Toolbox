@@ -63,6 +63,24 @@ class NodeAttributes:
     kernel_shape (int):         Convolution attributes - kernel_shape
     pads (int):                 Convolution attributes - pads
     strides (int):              Convolution attributes - strides
+    auto_pad (str):             Pooling attributes - auto_pad
+    ceil_mode (int):            Pooling attributes - ceil_mode
+    count_include_pad (int):    Pooling attributes - count_include_pad
+    clip_min (float):           Clip attributes - min (legacy opset <=6)
+    clip_max (float):           Clip attributes - max (legacy opset <=6)
+    reshape_shape (list):       Reshape attributes - target shape
+    allowzero (int):            Reshape attributes - allowzero (opset 14+)
+    div_axis (int):             Div attributes - axis (legacy opset <=6)
+    div_broadcast (int):        Div attributes - broadcast (legacy opset <=6)
+    gather_axis (int):          Gather attributes - axis
+    slice_starts (list):        Slice attributes - starts
+    slice_ends (list):          Slice attributes - ends
+    slice_axes (list):          Slice attributes - axes
+    slice_steps (list):         Slice attributes - steps
+    pad_mode (str):             Pad attributes - mode
+    pad_pads (list):            Pad attributes - pads
+    pad_constant_value (float): Pad attributes - constant_value
+    pad_axes (list):            Pad attributes - axes (opset 18+)
     """
 
     def __init__(self, model, node, support=True):
@@ -90,6 +108,31 @@ class NodeAttributes:
             self.kernel_shape = None
             self.pads = None
             self.strides = None
+            # Pooling-specific attributes
+            self.auto_pad = None
+            self.ceil_mode = None
+            self.count_include_pad = None
+            # Clip-specific attributes (legacy opset <=6 FLOAT attributes)
+            self.clip_min = None
+            self.clip_max = None
+            # Reshape-specific attributes
+            self.reshape_shape = None
+            self.allowzero = None
+            # Div-specific attributes (legacy opset <=6 attributes)
+            self.div_axis = None
+            self.div_broadcast = None
+            # Gather-specific attributes
+            self.gather_axis = None
+            # Slice-specific attributes
+            self.slice_starts = None
+            self.slice_ends = None
+            self.slice_axes = None
+            self.slice_steps = None
+            # Pad-specific attributes
+            self.pad_mode = None
+            self.pad_pads = None
+            self.pad_constant_value = None
+            self.pad_axes = None
             # Resize-specific attributes
             self.resize_mode = None
         else:
@@ -116,6 +159,31 @@ class NodeAttributes:
             self.kernel_shape = None
             self.pads = None
             self.strides = None
+            # Pooling-specific attributes
+            self.auto_pad = None
+            self.ceil_mode = None
+            self.count_include_pad = None
+            # Clip-specific attributes (legacy opset <=6 FLOAT attributes)
+            self.clip_min = None
+            self.clip_max = None
+            # Reshape-specific attributes
+            self.reshape_shape = None
+            self.allowzero = None
+            # Div-specific attributes (legacy opset <=6 attributes)
+            self.div_axis = None
+            self.div_broadcast = None
+            # Gather-specific attributes
+            self.gather_axis = None
+            # Slice-specific attributes
+            self.slice_starts = None
+            self.slice_ends = None
+            self.slice_axes = None
+            self.slice_steps = None
+            # Pad-specific attributes
+            self.pad_mode = None
+            self.pad_pads = None
+            self.pad_constant_value = None
+            self.pad_axes = None
             # Resize-specific attributes
             self.resize_mode = None
 
@@ -179,6 +247,16 @@ class NodeAttributes:
             return weight_tensor.shape
         else:
             return None
+
+    def get_initializer_value(self, model, tensor_name):
+        """
+        Return the numpy value of an initializer by name, or None when the
+        tensor is not a graph initializer (e.g. a dynamic/runtime input).
+        """
+        for initializer in model.graph.initializer:
+            if initializer.name == tensor_name:
+                return onnx.numpy_helper.to_array(initializer)
+        return None
 
     def get_input_size(self):
         input_size = 0
@@ -288,6 +366,24 @@ class NodeAttributes:
             "Kernel Shape": self.kernel_shape,
             "Pads": self.pads,
             "Strides": self.strides,
+            "Auto Pad": self.auto_pad,
+            "Ceil Mode": self.ceil_mode,
+            "Count Include Pad": self.count_include_pad,
+            "Clip Min": self.clip_min,
+            "Clip Max": self.clip_max,
+            "Reshape Shape": self.reshape_shape,
+            "Allow Zero": self.allowzero,
+            "Div Axis": self.div_axis,
+            "Div Broadcast": self.div_broadcast,
+            "Gather Axis": self.gather_axis,
+            "Slice Starts": self.slice_starts,
+            "Slice Ends": self.slice_ends,
+            "Slice Axes": self.slice_axes,
+            "Slice Steps": self.slice_steps,
+            "Pad Mode": self.pad_mode,
+            "Pad Pads": self.pad_pads,
+            "Pad Constant Value": self.pad_constant_value,
+            "Pad Axes": self.pad_axes,
             "Resize Mode": self.resize_mode,
             "MAC Count": self.count_mac,
             "ALU Count": self.count_alu,

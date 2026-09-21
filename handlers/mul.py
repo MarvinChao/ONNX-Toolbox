@@ -7,9 +7,12 @@ import numpy as np
 class MulNodeHandler:
     def handle(self, model, node):
         """
-        Handler for op_types "Mul".
+        Handler for op_types "Mul". (element-wise)
 
-        * The op has ALU count of its input_dimension (element-wise)
+        * The op has ALU count of its output_dimension (post-broadcast element
+          count; using output_dimension avoids ragged multi-input shapes)
+        * Since Mul could contain initializer, they will be considered as model
+          coefficient
 
         Args:
             model (class):  Input ONNX model
@@ -21,6 +24,11 @@ class MulNodeHandler:
         attributes = NodeAttributes(model, node)
 
         # Calculating compute primitive
-        attributes.count_alu = np.prod(attributes.input_dimension)
+        attributes.count_alu = np.prod(attributes.output_dimension)
+
+        # Mul inputs could possibly contain coefficients
+        for tensor_name in node.input:
+            if attributes.is_tensor_name_initializer(model, tensor_name):
+                attributes.weight_size += attributes.get_weight_size(model, tensor_name)
 
         return attributes
