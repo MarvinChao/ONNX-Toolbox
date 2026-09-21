@@ -1,0 +1,288 @@
+[
+  {
+    "ALU Count": 7200,
+    "Allow Zero": null,
+    "Auto Pad": null,
+    "Ceil Mode": null,
+    "Clip Max": null,
+    "Clip Min": null,
+    "Count Include Pad": null,
+    "DIV Count": 0,
+    "Data Type": "FLOAT",
+    "Dilation": null,
+    "Div Axis": null,
+    "Div Broadcast": null,
+    "EXP Count": 0,
+    "Gather Axis": null,
+    "Group": 1,
+    "Input Dimensions": [
+      [
+        1,
+        3,
+        32,
+        32
+      ]
+    ],
+    "Input Size (bytes)": 12288,
+    "Kernel Shape": [
+      3,
+      3
+    ],
+    "MAC Count": 194400.0,
+    "Op Type": "Conv",
+    "Operator Name": "",
+    "Output Dimensions": [
+      [
+        1,
+        8,
+        30,
+        30
+      ]
+    ],
+    "Output Size (bytes)": 28800,
+    "Pad Axes": null,
+    "Pad Constant Value": null,
+    "Pad Mode": null,
+    "Pad Pads": null,
+    "Pads": null,
+    "Reshape Shape": null,
+    "Resize Mode": null,
+    "SQRT Count": 0,
+    "Slice Axes": null,
+    "Slice Ends": null,
+    "Slice Starts": null,
+    "Slice Steps": null,
+    "Sparsity": 0.0,
+    "Strides": null,
+    "Supported": true,
+    "TRIG Count": 0,
+    "Weight Size (bytes)": 864
+  },
+  {
+    "ALU Count": 14400,
+    "Allow Zero": null,
+    "Auto Pad": null,
+    "Ceil Mode": null,
+    "Clip Max": 6.0,
+    "Clip Min": 0.0,
+    "Count Include Pad": null,
+    "DIV Count": 0,
+    "Data Type": "FLOAT",
+    "Dilation": null,
+    "Div Axis": null,
+    "Div Broadcast": null,
+    "EXP Count": 0,
+    "Gather Axis": null,
+    "Group": null,
+    "Input Dimensions": [
+      [
+        1,
+        8,
+        30,
+        30
+      ]
+    ],
+    "Input Size (bytes)": 28800,
+    "Kernel Shape": null,
+    "MAC Count": 0,
+    "Op Type": "Clip",
+    "Operator Name": "",
+    "Output Dimensions": [
+      [
+        1,
+        8,
+        30,
+        30
+      ]
+    ],
+    "Output Size (bytes)": 28800,
+    "Pad Axes": null,
+    "Pad Constant Value": null,
+    "Pad Mode": null,
+    "Pad Pads": null,
+    "Pads": null,
+    "Reshape Shape": null,
+    "Resize Mode": null,
+    "SQRT Count": 0,
+    "Slice Axes": null,
+    "Slice Ends": null,
+    "Slice Starts": null,
+    "Slice Steps": null,
+    "Sparsity": 0,
+    "Strides": null,
+    "Supported": true,
+    "TRIG Count": 0,
+    "Weight Size (bytes)": 8.0
+  },
+  {
+    "ALU Count": 5400,
+    "Allow Zero": null,
+    "Auto Pad": null,
+    "Ceil Mode": null,
+    "Clip Max": null,
+    "Clip Min": null,
+    "Count Include Pad": null,
+    "DIV Count": 1800,
+    "Data Type": "FLOAT",
+    "Dilation": null,
+    "Div Axis": null,
+    "Div Broadcast": null,
+    "EXP Count": 0,
+    "Gather Axis": null,
+    "Group": null,
+    "Input Dimensions": [
+      [
+        1,
+        8,
+        30,
+        30
+      ]
+    ],
+    "Input Size (bytes)": 28800,
+    "Kernel Shape": [
+      2,
+      2
+    ],
+    "MAC Count": 0,
+    "Op Type": "AveragePool",
+    "Operator Name": "",
+    "Output Dimensions": [
+      [
+        1,
+        8,
+        15,
+        15
+      ]
+    ],
+    "Output Size (bytes)": 7200,
+    "Pad Axes": null,
+    "Pad Constant Value": null,
+    "Pad Mode": null,
+    "Pad Pads": null,
+    "Pads": null,
+    "Reshape Shape": null,
+    "Resize Mode": null,
+    "SQRT Count": 0,
+    "Slice Axes": null,
+    "Slice Ends": null,
+    "Slice Starts": null,
+    "Slice Steps": null,
+    "Sparsity": 0,
+    "Strides": [
+      2,
+      2
+    ],
+    "Supported": true,
+    "TRIG Count": 0,
+    "Weight Size (bytes)": 0
+  },
+  {
+    "ALU Count": 0,
+    "Allow Zero": null,
+    "Auto Pad": null,
+    "Ceil Mode": null,
+    "Clip Max": null,
+    "Clip Min": null,
+    "Count Include Pad": null,
+    "DIV Count": 0,
+    "Data Type": "FLOAT",
+    "Dilation": null,
+    "Div Axis": null,
+    "Div Broadcast": null,
+    "EXP Count": 0,
+    "Gather Axis": null,
+    "Group": null,
+    "Input Dimensions": [
+      [
+        1,
+        8,
+        15,
+        15
+      ]
+    ],
+    "Input Size (bytes)": 7200,
+    "Kernel Shape": null,
+    "MAC Count": 0,
+    "Op Type": "Reshape",
+    "Operator Name": "",
+    "Output Dimensions": [
+      [
+        1,
+        1800
+      ]
+    ],
+    "Output Size (bytes)": 7200,
+    "Pad Axes": null,
+    "Pad Constant Value": null,
+    "Pad Mode": null,
+    "Pad Pads": null,
+    "Pads": null,
+    "Reshape Shape": [
+      1,
+      1800
+    ],
+    "Resize Mode": null,
+    "SQRT Count": 0,
+    "Slice Axes": null,
+    "Slice Ends": null,
+    "Slice Starts": null,
+    "Slice Steps": null,
+    "Sparsity": 0,
+    "Strides": null,
+    "Supported": true,
+    "TRIG Count": 0,
+    "Weight Size (bytes)": 8
+  },
+  {
+    "ALU Count": 10,
+    "Allow Zero": null,
+    "Auto Pad": null,
+    "Ceil Mode": null,
+    "Clip Max": null,
+    "Clip Min": null,
+    "Count Include Pad": null,
+    "DIV Count": 0,
+    "Data Type": "FLOAT",
+    "Dilation": null,
+    "Div Axis": null,
+    "Div Broadcast": null,
+    "EXP Count": 0,
+    "Gather Axis": null,
+    "Group": null,
+    "Input Dimensions": [
+      [
+        1,
+        1800
+      ]
+    ],
+    "Input Size (bytes)": 7200,
+    "Kernel Shape": null,
+    "MAC Count": 18000,
+    "Op Type": "Gemm",
+    "Operator Name": "",
+    "Output Dimensions": [
+      [
+        1,
+        10
+      ]
+    ],
+    "Output Size (bytes)": 40,
+    "Pad Axes": null,
+    "Pad Constant Value": null,
+    "Pad Mode": null,
+    "Pad Pads": null,
+    "Pads": null,
+    "Reshape Shape": null,
+    "Resize Mode": null,
+    "SQRT Count": 0,
+    "Slice Axes": null,
+    "Slice Ends": null,
+    "Slice Starts": null,
+    "Slice Steps": null,
+    "Sparsity": 0.0,
+    "Strides": null,
+    "Supported": true,
+    "TRIG Count": 0,
+    "Weight Size (bytes)": 72040
+  }
+]

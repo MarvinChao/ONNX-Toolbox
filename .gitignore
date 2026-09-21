@@ -14,5 +14,8 @@ build/
 .vscode/
 .idea/
 
+# Downloaded test models (fetched on demand via utils/test_model_download.py)
+models/
+
 # OS
 .DS_Store
