@@ -55,6 +55,15 @@ class MemTracker:
         """
         Simulate memory management with local SRAM
 
+        Args:
+            node:                 The ONNX node being processed
+            next_node_chainable:  Whether the following node is chainable based
+                                  on op-type and topological connection. This is
+                                  further OR-ed with a memory-fit test computed
+                                  here (once this node's footprint is known), so
+                                  a node whose footprint fits entirely in local
+                                  memory does not need a DRAM flush.
+
         Returns updated (bytes_loaded, bytes_stored, current_foorprint, max_footprint, chainable),
         """
         # Track local loads/stores for just this node
@@ -84,6 +93,15 @@ class MemTracker:
 
         # This is the maximal footprint for each node.
         current_max_footprint = self.current_footprint
+
+        # Now that this node's footprint is known, fold in the memory-fit test:
+        # if local memory can hold this node's footprint, no DRAM flush is
+        # needed regardless of the op-type/topology decision from the caller.
+        # local_memory_size is expressed in MBytes.
+        fits_in_local_memory = (
+            self.local_memory_size * 1024 * 1024 >= current_max_footprint
+        )
+        next_node_chainable = next_node_chainable or fits_in_local_memory
 
         # 3. If the next node is "un-chainable", flush its outputs to DRAM.
         if not next_node_chainable:
